@@ -1,0 +1,597 @@
+/* Общие переменные и сброс */
+:root{
+    --bg:#f7f7fb;
+    --txt:#111827;
+    --muted:#6b7280;
+    --card:#fff;
+    --br:#e5e7eb;
+    --pri:#111827;
+    --accent:#2563eb;
+    --radius:12px; /* Чуть меньше радиус */
+    --shadow: 0 4px 12px rgba(0,0,0,.05);
+    --fav-star-color: #f59e0b; /* Цвет избранного */
+    --delete-color: #dc2626; /* Цвет удаления */
+}
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--txt);
+    /* Стандартный системный шрифт для лучшей производительности и внешнего вида */
+    font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+}
+.wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:24px;
+}
+h1{
+    font-size:28px;
+    margin:0 0 8px;
+}
+.muted{
+    color:var(--muted);
+}
+.stat-label {
+    font-size: 14px;
+}
+
+/* Сетка */
+.grid{
+    display:grid;
+    gap:16px;
+}
+.grid-2{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+/* Карточки */
+.card{
+    background:var(--card);
+    border:1px solid var(--br);
+    border-radius:var(--radius);
+    padding:16px;
+    box-shadow:var(--shadow);
+    transition:transform 0.2s, box-shadow 0.2s;
+}
+.card:hover{
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+/* Кнопки */
+.btn{
+    appearance:none;
+    border:1px solid var(--br);
+    background:#fff;
+    border-radius:999px;
+    padding:8px 12px;
+    cursor:pointer;
+    transition:background 0.15s, border-color 0.15s;
+    font:inherit; /* Наследовать шрифт для единообразия */
+}
+.btn.primary{
+    background:var(--pri);
+    color:#fff;
+    border-color:transparent;
+}
+.btn:hover{
+    filter:brightness(.95);
+    transform:translateY(-1px);
+    box-shadow:0 2px 4px rgba(0,0,0,.05);
+}
+.btn:active{
+    transform:translateY(0);
+}
+
+/* Панель инструментов и строки */
+.toolbar{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+.row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+/* Формы */
+input[type="text"], input[type="number"], textarea, select{
+    width:100%;
+    border:1px solid var(--br);
+    border-radius:8px; 
+    padding:10px 12px;
+    font:inherit;
+    transition:border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus{
+    border-color:var(--accent);
+    outline:none;
+}
+textarea{
+    resize:vertical;
+}
+/* Стили для строки поиска и сортировки */
+.search-sort-row {
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+.filter-options-row {
+    margin-top:4px;
+}
+
+/* Бейджи и теги */
+.badge{
+    border-radius:999px;
+    font-size:12px;
+    padding:4px 10px;
+    border:1px solid transparent;
+    font-weight:600;
+}
+.b-planned{
+    background:#fef3c7;
+    color:#92400e; /* Желтый */
+} 
+.b-in_progress{
+    background:#dbeafe;
+    color:#1e40af; /* Голубой */
+} 
+.b-completed{
+    background:#dcfce7;
+    color:#065f46; /* Зеленый */
+} 
+.tags{
+    margin:-4px;
+}
+.tag{
+    display:inline-block;
+    margin:4px;
+    padding:4px 10px;
+    border-radius:999px;
+    background:#f3f4f6;
+    color:#374151;
+    font-size:12px;
+}
+
+/* Карточка курса */
+.course{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+.course-head{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    align-items:flex-start;
+}
+.course-title {
+    margin:0 0 4px;
+    font-size:18px;
+}
+.course-actions{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+.course-action-btn {
+    padding:6px 10px;
+    font-size:14px;
+}
+.delete-color {
+    color: var(--delete-color);
+}
+.course-desc {
+    margin:0;
+}
+
+/* Прогресс-бар */
+.progress{
+    height:10px;
+    background:#eef2ff;
+    border-radius:999px;
+    overflow:hidden;
+}
+.progress>span{
+    display:block;
+    height:100%;
+    /* Градиент в соответствии с исходным кодом */
+    background:linear-gradient(90deg,#6366f1,#3b82f6); 
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+}
+.progress-info-row {
+    justify-content:space-between;
+    font-size:14px;
+}
+.progress-pct {
+    font-variant-numeric:tabular-nums;
+    font-weight:600;
+}
+
+/* Элементы управления в карточке */
+.controls{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top:6px;
+}
+.controls .btn{
+    padding:6px 10px;
+}
+.checkboxes{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+.pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+/* Избранное */
+.fav-color {
+    color: var(--fav-star-color);
+    font-size:12px;
+}
+.favBtn{
+    border:none;
+    background:none;
+    font-size:18px;
+    line-height:1;
+    cursor: pointer;
+    padding: 0;
+}
+.favBtn.fav{
+    color:var(--fav-star-color);
+}
+.fav {
+    border-color: var(--fav-star-color);
+    color: #b45309;
+    background: #fffbe7;
+}
+
+/* Разное */
+.empty{
+    padding:48px;
+    text-align:center;
+}
+.empty-title {
+    font-size:18px;
+    font-weight:600;
+}
+.empty-text {
+    margin-top:6px;
+}
+.empty-btn {
+    margin-top:12px;
+}
+.stat-num{
+    font-size:28px;
+    font-weight:700;
+}
+.stat-progress-bar-wrap {
+    margin:8px 0;
+}
+.course-list {
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:16px;
+    margin-top:16px;
+}
+
+/* Модальное окно */
+dialog{
+    border:none;
+    border-radius:20px;
+    padding:0;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    max-width:720px;
+    width:calc(100% - 32px);
+}
+dialog::backdrop{
+    background:rgba(0,0,0,.35);
+    backdrop-filter: blur(3px);
+} 
+.modal{
+    padding:24px;
+}
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.modal-title {
+    margin:0;
+    font-size:20px;
+}
+.modal-close-btn {
+    border:none;
+    background:none;
+    font-size:24px;
+    color:var(--muted);
+    padding: 0;
+}
+.modal-body{
+    margin-top:16px;
+}
+.modal-form-grid {
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+.grid-col-full {
+    grid-column:1/-1;
+}
+.modal-progress-bar-wrap {
+    margin:4px 0;
+}
+.modal-foot{
+    display:flex;
+    gap:8px;
+    margin-top:20px;
+    justify-content:flex-end;
+}
+
+/* Медиазапросы */
+@media (max-width:900px){
+    .grid-2{
+        grid-template-columns:1fr 1fr;
+    }
+}
+@media (max-width:640px){
+    /* grid-2 (статистика) превращается в одну колонку на мобильных */
+    .grid-2{
+        grid-template-columns:1fr;
+    } 
+    .toolbar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    .modal-form-grid{
+        grid-template-columns:1fr;
+    }
+    .modal-foot{
+        justify-content:center;
+    }
+    .wrap{
+        padding: 16px;
+    }
+    .search-sort-row {
+        grid-template-columns: 1fr;
+        gap: 16px; /* Увеличим отступ между полями на мобильных */
+    }
+}
+/* Быстрые действия */
+.quick-actions {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--br);
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.btn.small {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+/* Анимации */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card.updated {
+    animation: highlight 1s ease;
+}
+
+@keyframes highlight {
+    0% { 
+        background-color: rgba(59, 130, 246, 0.1);
+        transform: scale(1.02);
+    }
+    100% { 
+        background-color: transparent;
+        transform: scale(1);
+    }
+}
+
+/* Интерактивный прогресс-бар */
+.progress {
+    cursor: pointer;
+    position: relative;
+}
+
+.progress:hover::before {
+    content: 'Кликните для установки прогресса';
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--txt);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.progress:hover::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--txt);
+}
+
+/* Улучшенные карточки */
+.course {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.course:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.course-title {
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.course-title:hover {
+    color: var(--accent);
+}
+
+/* Адаптивность для новых элементов */
+@media (max-width: 640px) {
+    .quick-actions {
+        justify-content: center;
+    }
+    
+    .btn.small {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+    }
+    
+    .toolbar .row {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .toolbar .row > div.row {
+        justify-content: center;
+    }
+}
+
+/* Улучшенные теги */
+.tag {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Анимация появления карточек */
+.course {
+    animation: slideInUp 0.5s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Улучшенные кнопки в toolbar */
+.toolbar .btn {
+    transition: all 0.2s ease;
+    border: 1px solid var(--br);
+}
+
+.toolbar .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Статус для пустого состояния */
+.empty {
+    animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Подсказки для поиска */
+.search-container {
+    position: relative;
+}
+
+.search-hint {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+/* Модальное окно */
+dialog {
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+    max-width: 720px;
+    width: calc(100% - 32px);
+}
+
+dialog::backdrop {
+    background: rgba(0,0,0,.35);
+    backdrop-filter: blur(3px);
+}
+
+/* Кнопка закрытия */
+.modal-close-btn {
+    border: none;
+    background: none;
+    font-size: 24px;
+    color: var(--muted);
+    padding: 0;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.modal-close-btn:hover {
+    background: #f3f4f6;
+}
+
+/* Кнопки в футере модального окна */
+.modal-foot {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.modal-foot .btn {
+    min-width: 100px;
+}
+
+/* Адаптивность для модального окна */
+@media (max-width: 640px) {
+    .modal-foot {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .modal-foot .btn {
+        flex: 1;
+        min-width: 0;
+    }
+}

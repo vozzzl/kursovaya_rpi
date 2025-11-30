@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Учебный трекер</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+    <div class="wrap">
+        <header class="toolbar">
+            <div>
+                <h1>Учебный трекер</h1>
+            </div>
+            <div class="row">
+                <button class="btn primary" id="addBtn">+ Добавить курс</button>
+            </div>
+        </header>
+        <section class="grid grid-2" style="margin:16px 0 12px">
+            <div class="card">
+                <div class="muted stat-label">Всего курсов</div>
+                <div class="stat-num" id="statTotal">0</div>
+            </div>
+            <div class="card">
+                <div class="muted stat-label">Средний прогресс</div>
+                <div class="progress stat-progress-bar-wrap"><span id="statAvgBar" style="width:0%"></span></div>
+                <div class="muted stat-label"><span id="statAvg">0</span>%</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="grid filter-controls">
+                <div class="grid search-sort-row">
+                    <div>
+                        <label class="muted stat-label">Поиск</label>
+                        <input type="text" id="q" placeholder="Название, тег или описание..." />
+                    </div>
+                    <div>
+                        <label class="muted stat-label">Сортировка</label>
+                        <select id="sort">
+                            <option value="updated_desc">Недавно изменённые</option>
+                            <option value="alpha_asc">По алфавиту A→Я</option>
+                            <option value="progress_desc">По прогрессу ↓</option>
+                            <option value="progress_asc">По прогрессу ↑</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row filter-options-row">
+                    <div class="checkboxes" id="statusChecks"></div>
+                    <label class="pill"><input type="checkbox" id="onlyFavs"> Только избранные</label>
+                </div>
+            </div>
+        </section>
+
+        <section id="list" class="grid course-list">
+        </section>
+
+        <div id="empty" class="card empty" hidden>
+            <div class="empty-title">Здесь пока пусто</div>
+            <div class="muted empty-text">Добавьте первый курс, чтобы начать отслеживать прогресс.</div>
+            <button class="btn primary empty-btn" id="emptyAdd">+ Добавить курс</button>
+        </div>
+    </div>
+
+    <dialog id="editor">
+    <form method="dialog" class="modal" id="editorForm">
+        <div class="modal-head">
+            <h3 id="modalTitle" class="modal-title">Новый курс</h3>
+            <button type="button" class="btn modal-close-btn" aria-label="Закрыть">✕</button>
+        </div>
+        <div class="modal-body grid modal-form-grid">
+            <div class="grid-col-full">
+                <label class="muted stat-label">Название</label>
+                <input type="text" id="fTitle" required />
+            </div>
+            <div class="grid-col-full">
+                <label class="muted stat-label">Теги (через запятую)</label>
+                <input type="text" id="fTags" placeholder="js, react, sql" />
+            </div>
+            <div>
+                <label class="muted stat-label">Всего уроков</label>
+                <input type="number" id="fTotal" min="1" value="10" />
+            </div>
+            <div>
+                <label class="muted stat-label">Выполнено</label>
+                <input type="number" id="fDone" min="0" value="0" />
+            </div>
+            <div class="grid-col-full">
+                <label class="muted stat-label">Прогресс</label>
+                <div class="progress modal-progress-bar-wrap">
+                    <span id="fProgress" style="width:0%"></span>
+                </div>
+                <div class="muted stat-label">
+                    <span id="fPct">0</span>%
+                </div>
+            </div>
+            <div class="grid-col-full">
+                <label class="muted stat-label">Описание</label>
+                <textarea id="fDesc" rows="3"></textarea>
+            </div>
+            <div class="grid-col-full row" id="statusRadios"></div>
+        </div>
+        <div class="modal-foot">
+            <button type="submit" class="btn primary" id="saveBtn">Сохранить</button>
+            <button type="button" class="btn" value="cancel">Отмена</button>
+        </div>
+    </form>
+</dialog>
+
+    <template id="courseTpl">
+        <article class="card course">
+            <div class="course-head">
+                <div>
+                    <h3 class="title course-title"></h3>
+                    <div class="row">
+                        <span class="badge status"></span>
+                        <span class="favLabel muted fav-color" hidden>★ Избранное</span>
+                    </div>
+                </div>
+                <div class="course-actions">
+                    <button class="favBtn" title="В избранное">☆</button>
+                    <button class="btn editBtn course-action-btn">✏️ Редакт.</button>
+                    <button class="btn delBtn course-action-btn delete-color">🗑️ Удалить</button>
+                </div>
+            </div>
+            <p class="desc muted course-desc"></p>
+            <div class="tags"></div>
+            <div>
+                <div class="row progress-info-row">
+                    <span class="progressText"></span>
+                    <span class="pct progress-pct">0%</span>
+                </div>
+                <div class="progress"><span class="bar" style="width:0%"></span></div>
+                <div class="controls">
+                    <button class="btn minus">−1</button>
+                    <button class="btn plus">+1</button>
+                    <select class="statusSel">
+                        <option value="planned">Запланирован</option>
+                        <option value="in_progress">В процессе</option>
+                        <option value="completed">Завершен</option>
+                    </select>
+                </div>
+            </div>
+        </article>
+    </template>
+        <script src="js/mock/mock.js"></script>
+        <script src="js/model.js"></script>
+        <script src="js/notification.js"></script>
+        <script src="js/datamanager.js"></script>
+        <script src="js/components/Statistics.js"></script>
+        <script src="js/components/FilterControls.js"></script>
+        <script src="js/components/Modal.js"></script>
+        <script src="js/components/CourseCard.js"></script>
+        <script src="js/view.js"></script>
+        <script src="js/presenter.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
