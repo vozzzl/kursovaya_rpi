@@ -4,14 +4,35 @@ class Statistics {
     }
 
     update(stats) {
-        if (!this.container) return;
+        console.log('Statistics.update called with:', stats);
         
-        const totalElement = this.container.querySelector('#statTotal');
-        const avgElement = this.container.querySelector('#statAvg');
-        const avgBarElement = this.container.querySelector('#statAvgBar');
+        if (!this.container) {
+            console.error('Statistics container not found');
+            return;
+        }
         
-        if (totalElement) totalElement.textContent = stats.total;
-        if (avgElement) avgElement.textContent = stats.averageProgress;
-        if (avgBarElement) avgBarElement.style.width = `${stats.averageProgress}%`;
+        const totalElement = this.container.querySelector('#statTotal') || 
+                           document.getElementById('statTotal');
+        const avgElement = document.getElementById('statAvg');
+        const avgBarElement = document.getElementById('statAvgBar');
+        
+        console.log('Found elements:', {
+            totalElement, avgElement, avgBarElement
+        });
+        
+        if (totalElement) {
+            console.log('Setting total to:', stats.total);
+            totalElement.textContent = stats.total;
+        }
+        
+        if (avgElement) {
+            console.log('Setting average to:', stats.averageProgress + '%');
+            avgElement.textContent = stats.averageProgress;
+        }
+        
+        if (avgBarElement) {
+            console.log('Setting average bar to:', stats.averageProgress + '%');
+            avgBarElement.style.width = `${stats.averageProgress}%`;
+        }
     }
 }

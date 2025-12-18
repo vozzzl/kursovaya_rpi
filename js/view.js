@@ -5,9 +5,21 @@ class CourseView {
         this.courseComponents = new Map();
         
         try {
-            if (document.getElementById('statTotal')) {
-                this.statistics = new Statistics('statTotal');
-            }
+            console.log('Initializing CourseView...');
+            
+            const statTotalElement = document.getElementById('statTotal');
+            const statAvgElement = document.getElementById('statAvg');
+            const statAvgBarElement = document.getElementById('statAvgBar');
+            
+            console.log('Found stat elements:', {
+                statTotalElement, statAvgElement, statAvgBarElement
+            });
+            
+            const statsContainer = document.createElement('div');
+            statsContainer.id = 'statsContainer';
+            
+            this.statistics = new Statistics('statsContainer');
+            console.log('Statistics component initialized');
             
             this.filterControls = null;
             this.modal = null;
@@ -22,6 +34,7 @@ class CourseView {
         this.presenter = presenter;
         this.filterControls = new FilterControls(presenter);
         this.modal = new Modal(presenter);
+        console.log('CourseView fully initialized with presenter');
     }
 
     setupEmptyState() {
@@ -51,7 +64,11 @@ class CourseView {
             if (presenter) {
                 this.presenter = presenter;
             }
+
+            console.log('Rendering courses:', courses.length);
+            
             this.coursesContainer.innerHTML = '';
+            
             this.courseComponents.forEach(component => {
                 try {
                     if (component && typeof component.destroy === 'function') {
@@ -62,6 +79,7 @@ class CourseView {
                 }
             });
             this.courseComponents.clear();
+            
             courses.forEach(course => {
                 try {
                     const courseComponent = new CourseCard(course, this.presenter);
@@ -73,9 +91,10 @@ class CourseView {
                     console.error('Error rendering course:', course.id, error);
                 }
             });
+            
             this.updateEmptyState(courses.length === 0);
-        } 
-        catch (error) {
+            
+        } catch (error) {
             console.error('Error rendering courses:', error);
         }
     }
@@ -121,8 +140,26 @@ class CourseView {
         }
     }
 
-    updateStatistics(stats) {
+ updateStatistics(stats) {
         try {
+            console.log('View: Updating statistics with:', stats);
+            
+            const statTotalElement = document.getElementById('statTotal');
+            const statAvgElement = document.getElementById('statAvg');
+            const statAvgBarElement = document.getElementById('statAvgBar');
+            
+            if (statTotalElement) {
+                statTotalElement.textContent = stats.total;
+            }
+            
+            if (statAvgElement) {
+                statAvgElement.textContent = stats.averageProgress;
+            }
+            
+            if (statAvgBarElement) {
+                statAvgBarElement.style.width = `${stats.averageProgress}%`;
+            }
+            
             if (this.statistics && typeof this.statistics.update === 'function') {
                 this.statistics.update(stats);
             }

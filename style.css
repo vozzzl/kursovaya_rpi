@@ -34,6 +34,8 @@ h1{
 }
 .stat-label {
     font-size: 14px;
+    font-weight: 600;
+    color: #475569;
 }
 
 /* Сетка */
@@ -56,6 +58,22 @@ h1{
 }
 .card:hover{
     box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+/* Улучшенные карточки статистики */
+.card:has(#statTotal),
+.card:has(#statAvg) {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card:has(#statTotal):hover,
+.card:has(#statAvg):hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.1);
 }
 
 /* Кнопки */
@@ -188,27 +206,182 @@ textarea{
     margin:0;
 }
 
-/* Прогресс-бар */
+/* УЛУЧШЕННЫЙ ПРОГРЕСС-БАР */
 .progress{
-    height:10px;
-    background:#eef2ff;
-    border-radius:999px;
-    overflow:hidden;
+    height: 12px; /* Увеличили высоту */
+    background: #f1f5f9; /* Более светлый фон для контраста */
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #e2e8f0; /* Добавили границу */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+
+/* Специальный стиль для ПУСТОГО прогресс-бара (0%) */
+.progress:has(span[style*="width: 0%"]),
+.progress:has(span[style*="width:0%"]) {
+    background: #f8fafc; /* Светлый фон */
+    border: 2px dashed #cbd5e1; /* Пунктирная граница */
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(203, 213, 225, 0.3) 5px,
+        rgba(203, 213, 225, 0.3) 10px
+    );
+    background-size: 20px 20px;
+}
+
+/* Анимация для пустого прогресс-бара */
+@keyframes emptyPulse {
+    0% { border-color: #cbd5e1; }
+    50% { border-color: #94a3b8; }
+    100% { border-color: #cbd5e1; }
+}
+
+.progress:has(span[style*="width: 0%"]):hover,
+.progress:has(span[style*="width:0%"]):hover {
+    animation: emptyPulse 1.5s infinite;
+}
+
+/* Полоса прогресса */
 .progress>span{
-    display:block;
-    height:100%;
-    /* Градиент в соответствии с исходным кодом */
-    background:linear-gradient(90deg,#6366f1,#3b82f6); 
-    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #3b82f6, #10b981); /* Яркий градиент */
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    z-index: 1;
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
+
+/* Стиль для заполненной части при 0% */
+.progress>span[style*="width: 0%"],
+.progress>span[style*="width:0%"] {
+    background: #cbd5e1; /* Серый цвет для 0% */
+    width: 100% !important; /* Занимает всю ширину */
+    opacity: 0.15; /* Полупрозрачный */
+    box-shadow: none;
+}
+
+/* Контейнер прогресс-бара в статистике */
+.stat-progress-bar-wrap {
+    margin: 12px 0 8px;
+    position: relative;
+}
+
+/* Шкала с процентами для статистики */
+.stat-progress-bar-wrap:after {
+    content: '0%';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.stat-progress-bar-wrap:before {
+    content: '100%';
+    position: absolute;
+    bottom: -20px;
+    right: 0;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* Улучшенный прогресс-бар в статистике */
+#statAvgBar {
+    height: 14px; /* Выше обычного */
+    border-radius: 7px;
+    background: #152d46;
+    border: 2px solid #e2e8f0;
+}
+
+/* Специальный стиль для пустого статистического прогресс-бара */
+#statAvgBar[style*="width: 0%"],
+#statAvgBar[style*="width:0%"] {
+    background: #f8fafc !important;
+    border: 2px dashed #94a3b8 !important;
+    background-image: repeating-linear-gradient(
+        45deg,
+        #f1f5f9,
+        #f1f5f9 10px,
+        #e2e8f0 10px,
+        #e2e8f0 20px
+    );
+    background-size: 28px 28px;
+    animation: stripeMove 2s linear infinite;
+}
+
+@keyframes stripeMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 28px 0; }
+}
+
+/* ИСПРАВЛЕНИЕ: Средний прогресс должен быть в одной строке */
+.stat-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Контейнер для метки и процента в ОДНОЙ строке */
+.stat-progress-label-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.stat-progress-bar-wrap {
+    margin: 4px 0 8px;
+}
+
+/* Процент должен быть справа от метки */
+.stat-progress-percent {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3b82f6;
+    background: #eff6ff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #dbeafe;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* Убираем старый стиль для #statAvg */
+#statAvg {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3b82f6;
+    background: none;
+    padding: 0;
+    border: none;
+    min-width: auto;
+}
+
+/* Стили для обычной метки под прогресс-баром */
+.stat-progress-bar-wrap + .muted.stat-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    font-size: 14px;
+}
+
 .progress-info-row {
     justify-content:space-between;
     font-size:14px;
 }
 .progress-pct {
     font-variant-numeric:tabular-nums;
-    font-weight:600;
+    font-weight:700;
+    color: #1e40af;
 }
 
 /* Элементы управления в карточке */
@@ -270,13 +443,50 @@ textarea{
 .empty-btn {
     margin-top:12px;
 }
+
+/* УЛУЧШЕННЫЕ ЦИФРЫ СТАТИСТИКИ */
 .stat-num{
-    font-size:28px;
-    font-weight:700;
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 4px 0;
 }
-.stat-progress-bar-wrap {
-    margin:8px 0;
+
+/* ИСПРАВЛЕННЫЙ КОНТЕЙНЕР для статистики среднего прогресса */
+.card:has(#statAvg) {
+    display: flex;
+    flex-direction: column;
 }
+
+/* Стили для блока "Средний прогресс" */
+.card:has(#statAvg) .muted.stat-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* Процент должен быть на той же строке */
+.card:has(#statAvg) .muted.stat-label span#statAvg {
+    font-size: 20px;
+    font-weight: 800;
+    color: #3b82f6;
+    background: #eff6ff;
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid #dbeafe;
+    margin-left: 8px;
+}
+
+/* Прогресс-бар под меткой */
+.card:has(#statAvg) .stat-progress-bar-wrap {
+    margin: 0 0 8px 0;
+}
+
 .course-list {
     grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
     gap:16px;
@@ -362,6 +572,26 @@ dialog::backdrop{
     .search-sort-row {
         grid-template-columns: 1fr;
         gap: 16px; /* Увеличим отступ между полями на мобильных */
+    }
+    
+    /* Адаптивные улучшения для статистики */
+    .stat-num {
+        font-size: 28px;
+    }
+    
+    .card:has(#statAvg) .muted.stat-label span#statAvg {
+        font-size: 18px;
+        padding: 3px 8px;
+    }
+    
+    .stat-progress-bar-wrap:after,
+    .stat-progress-bar-wrap:before {
+        font-size: 10px;
+        bottom: -18px;
+    }
+    
+    #statAvgBar {
+        height: 12px;
     }
 }
 /* Быстрые действия */
@@ -594,4 +824,140 @@ dialog::backdrop {
         flex: 1;
         min-width: 0;
     }
+}
+
+/* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ ЛУЧШЕЙ ВИДИМОСТИ ПУСТОГО ПРОГРЕСС-БАРА */
+
+/* Подсветка статистики при 0% */
+.card:has(#statAvgBar[style*="width: 0%"]),
+.card:has(#statAvgBar[style*="width:0%"]) {
+    border-color: #fca5a5;
+    background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+}
+
+/* Иконка-индикатор для пустой статистики */
+.card:has(#statAvg):before {
+    content: '📊';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 20px;
+    opacity: 0.7;
+}
+
+.card:has(#statAvgBar[style*="width: 0%"]):before,
+.card:has(#statAvgBar[style*="width:0%"]):before {
+    content: '📈';
+    color: #ef4444;
+    opacity: 1;
+}
+
+/* Выделение текста для пустой статистики */
+.stat-label:has(+ .stat-progress-bar-wrap:has(#statAvgBar[style*="width: 0%"])),
+.stat-label:has(+ .stat-progress-bar-wrap:has(#statAvgBar[style*="width:0%"])) {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+/* Анимация появления для прогресс-баров */
+@keyframes progressAppear {
+    from {
+        opacity: 0.5;
+        transform: scaleX(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+.progress {
+    animation: progressAppear 0.6s ease-out;
+}
+
+/* Градиентная обводка для контейнера статистики */
+.card:has(#statTotal),
+.card:has(#statAvg) {
+    position: relative;
+}
+
+.card:has(#statTotal)::before,
+.card:has(#statAvg)::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #3b82f6, #10b981, #8b5cf6);
+    border-radius: calc(var(--radius) + 2px);
+    z-index: -1;
+    opacity: 0.1;
+}
+
+/* Эффект при наведении на статистику */
+.card:has(#statTotal):hover::before,
+.card:has(#statAvg):hover::before {
+    opacity: 0.2;
+    animation: gradientRotate 3s linear infinite;
+}
+
+@keyframes gradientRotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.card:has(#statTotal),
+.card:has(#statAvg) {
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ИСПРАВЛЕНИЕ ДЛЯ ОТОБРАЖЕНИЯ СРЕДНЕГО ПРОГРЕССА В ОДНОЙ СТРОКЕ */
+
+/* Сбрасываем все предыдущие стили для блока со средним прогрессом */
+.card:nth-child(2) .muted.stat-label {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 8px !important;
+    width: 100% !important;
+}
+
+/* Убираем все псевдоэлементы, которые могут ломать верстку */
+.card:nth-child(2) .muted.stat-label:before,
+.card:nth-child(2) .muted.stat-label:after {
+    content: none !important;
+}
+
+/* Процент на одной строке с текстом */
+.card:nth-child(2) .muted.stat-label #statAvg {
+    display: inline !important;
+    margin-left: 8px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: #3b82f6 !important;
+    background: #eff6ff !important;
+    padding: 4px 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid #dbeafe !important;
+}
+
+/* Убираем лишние отступы */
+.card:nth-child(2) .stat-progress-bar-wrap {
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+}
+
+/* Убираем псевдоэлементы со шкалой если они мешают */
+.card:nth-child(2) .stat-progress-bar-wrap:before,
+.card:nth-child(2) .stat-progress-bar-wrap:after {
+    display: none;
 }

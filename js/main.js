@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(() => {
+    setTimeout(async () => {
         try {
-            console.log('🚀 Инициализация учебного трекера...');
+            console.log('🚀 Инициализация учебного трекера с API...');
             
             const requiredElements = ['list', 'editor', 'statTotal', 'statAvg', 'statAvgBar'];
             const missingElements = requiredElements.filter(id => !document.getElementById(id));
@@ -13,37 +13,43 @@ document.addEventListener('DOMContentLoaded', function() {
             
             console.log('✅ Все необходимые DOM элементы найдены');
             
+            // Показываем индикатор загрузки
+            const listContainer = document.getElementById('list');
+            if (listContainer) {
+                listContainer.innerHTML = `
+                    <div class="card empty">
+                        <div class="empty-title">Загрузка данных...</div>
+                        <div class="muted empty-text">Подключение к API...</div>
+                    </div>
+                `;
+            }
+            
             const model = new CourseModel();
             const view = new CourseView();
             const presenter = new CoursePresenter(model, view);
             
             view.initialize(presenter);
             
-            console.log('✅ Приложение успешно инициализировано');
-            console.log('📊 Загружено курсов:', model.getAllCourses().length);
-            
-            const stats = model.getStatistics();
-            console.log('📈 Начальная статистика:', stats);
-            
-            const statTotal = document.getElementById('statTotal');
-            const statAvg = document.getElementById('statAvg');
-            const statAvgBar = document.getElementById('statAvgBar');
-            
-            console.log('Элемент statTotal:', statTotal);
-            console.log('Элемент statAvg:', statAvg);
-            console.log('Элемент statAvgBar:', statAvgBar);
-            
+            // Даем время на загрузку данных
             setTimeout(() => {
-                console.log('Принудительное обновление статистики...');
+                console.log('✅ Приложение успешно инициализировано');
+                console.log('📊 Загружено курсов:', model.getAllCourses().length);
+                
+                const stats = model.getStatistics();
+                console.log('📈 Начальная статистика:', stats);
+                
                 presenter.updateStatistics();
-            }, 100);
-            
-            setTimeout(() => {
-                const courses = model.getAllCourses();
-                if (courses.length > 0) {
-                    console.log('Тестируем обновление прогресса для первого курса:', courses[0].title);
-                }
-            }, 500);
+                
+                // Проверяем синхронизацию
+                setTimeout(async () => {
+                    const localCourses = JSON.parse(localStorage.getItem('courses') || '[]');
+                    if (localCourses.length > 0) {
+                        if (confirm('Обнаружены локальные данные. Синхронизировать с API?')) {
+                            await DataManager.syncWithApi(model);
+                        }
+                    }
+                }, 2000);
+            }, 1000);
             
             window.courseApp = {
                 model: model,
@@ -57,18 +63,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     const coursesCount = model.getAllCourses().length;
                     if (coursesCount > 0 && window.Notification && typeof window.Notification.show === 'function') {
-                        Notification.show(`Добро пожаловать! Загружено ${coursesCount} курсов`, 'info', 2000);
+                        Notification.show(`Загружено ${coursesCount} курсов из API`, 'info', 2000);
                     }
                 } catch (error) {
                     console.warn('Не удалось показать приветственное сообщение:', error);
                 }
-            }, 500);
+            }, 1500);
             
         } catch (error) {
             console.error('❌ Ошибка инициализации приложения:', error);
             
             try {
-                const errorMessage = `Не удалось загрузить приложение.\nОшибка: ${error.message}\nПроверьте консоль для подробностей.`;
+                const errorMessage = `Не удалось загрузить приложение.\nОшибка: ${error.message}\nПроверьте соединение с API и консоль для подробностей.`;
                 alert(errorMessage);
             } catch (alertError) {
                 console.error('Не удалось показать alert:', alertError);
@@ -80,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     listContainer.innerHTML = `
                         <div class="card empty">
                             <div class="empty-title">Ошибка загрузки</div>
-                            <div class="muted empty-text">${error.message}</div>
+                            <div class="muted empty-text">${error.message}<br>Проверьте подключение к интернету.</div>
                             <button class="btn primary empty-btn" onclick="window.location.reload()">🔄 Перезагрузить</button>
                         </div>
                     `;
@@ -107,9 +113,15 @@ document.addEventListener('keydown', function(e) {
         
         if (e.ctrlKey && e.shiftKey && e.key === 'C') {
             e.preventDefault();
-            if (confirm('Очистить все данные?')) {
-                localStorage.clear();
-                window.location.reload();
+            if (confirm('Очистить все данные с API и локально?')) {
+                DataManager.clearAllData(window.courseApp.model);
+            }
+        }
+        
+        if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+            e.preventDefault();
+            if (window.courseApp && window.courseApp.model) {
+                DataManager.syncWithApi(window.courseApp.model);
             }
         }
     } catch (error) {
